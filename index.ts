@@ -21,22 +21,29 @@ app.get('/', (req, res) => {
 // API для загрузки картинки в формате base64
 app.post('/upload', (req, res) => {
     const { taskId, imageBase64, token } = req.body;
+    console.log('Получил файл ', { taskId, token });
 
     if (token !== process.env.TOKEN) {
         return res.status(400).json({error: 'Incorrect token'});
     }
 
+    console.log('Проверка токена пройдена');
+
     if (!imageBase64) {
+        console.log('Не пришла картинка');
         return res.status(400).json({error: 'No image data provided'});
     }
 
     const buffer = Buffer.from(imageBase64, 'base64');
     const imagePath = path.join(__dirname, `/images/${taskId}.png`);
 
+    console.log('Подготовил картинку для записи на диск');
+
     fs.writeFile(imagePath, buffer, (err) => {
         if (err) {
             return res.status(500).json({error: 'Failed to save image'});
         }
+        console.log('Картинка сохранена в папку: ', imagePath);
         res.json({message: 'Image uploaded successfully', taskId: `${taskId}`});
     });
 });
