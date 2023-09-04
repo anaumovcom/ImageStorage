@@ -24,6 +24,7 @@ app.post('/upload', (req, res) => {
     console.log('Получил файл ', { taskId, token });
 
     if (token !== process.env.TOKEN) {
+        console.log('Неверный токен: ', token + ' !== ' + process.env.TOKEN);
         return res.status(400).json({error: 'Incorrect token'});
     }
 
